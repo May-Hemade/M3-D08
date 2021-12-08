@@ -1,4 +1,5 @@
-const addItem = (form) => {
+const addItem = (event, form) => {
+  event.preventDefault()
   let raw = JSON.stringify({
     name: form.name.value,
     description: form.description.value,
@@ -15,9 +16,10 @@ const addItem = (form) => {
       "Content-Type": "application/json",
     },
     body: raw,
-    redirect: "follow",
   })
-    .then((response) => {})
+    .then((response) => {
+      console.log(response)
+    })
     .catch((error) => {
       console.log(error)
     })
