@@ -10,6 +10,10 @@ const loadItems = () => {
     .then((items) => {
       displayItems(items)
     })
+
+    .catch((error) => {
+      console.log(error)
+    })
 }
 
 let cardsArr = []
