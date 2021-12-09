@@ -18,7 +18,9 @@ const addItem = (event, form) => {
     body: raw,
   })
     .then((response) => {
-      console.log(response)
+      alert("Item added")
+      form.reset()
+      loadItems()
     })
     .catch((error) => {
       console.log(error)
@@ -26,33 +28,43 @@ const addItem = (event, form) => {
   return false
 }
 
-// const addItem = async (form) => {
-//   let raw = JSON.stringify({
-//     name: form.name.value,
-//     description: form.description.value,
-//     imageUrl: form.imageUrl.value,
-//     brand:form.brand.value,
-//     price: form.price.value,
-//   })
-//   try {
-//     let response = await fetch(
-//       "https://striveschool-api.herokuapp.com/api/product/",
-//       {
-//         method: "POST",
-//         headers: {
-//           Authorization:
-//             "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWIwYmI1NjRjZmY1ZjAwMTU5MGJkZDEiLCJpYXQiOjE2Mzg5NzI2NzMsImV4cCI6MTY0MDE4MjI3M30.Fp3LdF8GznE1ZjcIp4kZJMiuhdAs4SxH4Wr3gwUj_yg",
-//           "Content-Type": "application/json",
-//         },
-//         body: raw,
-//         redirect: "follow",
-//       }
-//     )
+const loadItems = () => {
+  fetch("https://striveschool-api.herokuapp.com/api/product/", {
+    method: "GET",
+    headers: {
+      Authorization:
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MWIwYmI1NjRjZmY1ZjAwMTU5MGJkZDEiLCJpYXQiOjE2Mzg5NzI2NzMsImV4cCI6MTY0MDE4MjI3M30.Fp3LdF8GznE1ZjcIp4kZJMiuhdAs4SxH4Wr3gwUj_yg",
+    },
+  })
+    .then((response) => response.json())
+    .then((items) => {
+      displayItems(items)
+    })
 
-//     if (response.ok) {
-//       console.log(response)
-//     }
-//   } catch (error) {
-//     console.log(error)
-//   }
-// }
+    .catch((error) => {
+      console.log(error)
+    })
+}
+
+const displayItems = (items) => {
+  let itemsContainerNode = document.getElementById("items-container")
+  itemsContainerNode.innerHTML = ""
+
+  items.forEach((item) => {
+    let trNode = document.createElement("tr")
+    itemsContainerNode.appendChild(trNode)
+    trNode.innerHTML = `
+      <td><img src="${item.imageUrl}" style="width: 100px;"/></td>
+      <td>${item.name}</td>
+      <td>${item.brand}</td>
+      <td>${item.price}</td>
+      <td>
+      <a class="btn btn-primary" href="/details.html?product_id=${item._id}">View</button>
+      </td>
+      `
+  })
+}
+
+window.onload = () => {
+  loadItems()
+}
